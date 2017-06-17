@@ -12,5 +12,8 @@
   "permissions": [
     "activeTab",
     "storage"
-  ]
+  ],
+  "background": {
+    "scripts": ["hot-reload.js"]
+  }
 }
