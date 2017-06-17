@@ -16,36 +16,39 @@
 /* ----------------------------------------------- */
 /* HEADER */
 /* ----------------------------------------------- */
+(function() {
+  var addItem = document.querySelector(".add-btn")
 
-var addItem = document.querySelector(".add-btn")
-
-addItem.addEventListener("click", function() {
-  this.classList.toggle("active");
-  var panel = document.querySelector(".new-item");
-  if (panel.style.maxHeight) {
-    panel.style.maxHeight = null;
-  } else {
-    panel.style.maxHeight = panel.scrollHeight + "px";
-  }
-});
+  addItem.addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = document.querySelector(".new-item");
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+  });
+})()
 
 /* ----------------------------------------------- */
 /* ITEMS */
 /* ----------------------------------------------- */
 
-var items = document.querySelectorAll(".item-name");
+(function() {
+  var items = document.querySelectorAll(".item-name");
 
-items.forEach(function(item) {
-  item.addEventListener("click", function() {
-    this.classList.toggle("active");
-    var panel = this.nextElementSibling;
-    if (panel.style.maxHeight) {
-        panel.style.maxHeight = null;
-    } else {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-    }
+  items.forEach(function(item) {
+    item.addEventListener("click", function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+      } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
   });
-});
+})()
 
 /* ----------------------------------------------- */
 /* TOOLS */
