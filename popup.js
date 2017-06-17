@@ -32,6 +32,7 @@ store = {
 /* ----------------------------------------------- */
 /* HEADER */
 /* ----------------------------------------------- */
+
 (function() {
   var addItem = document.querySelector(".add-btn")
 
@@ -87,22 +88,20 @@ function initialize() {
 }
 
 function renderItems() {
-  function getItemString({ name, text }) {
+  function getItemString({ name, text, index }) {
     return `
         <div class="item">
           <button class="item-name">${name}</button>
           <div class="item-detail">
             <div class="row">
-              <label class="item-detail-text-label" for="item-detail-text">Text</label>
-              <textarea id="item-detail-text" class="item-detail-text" rows="10">
-                ${text}
-              </textarea>
+              <label for="item-detail-text-${index}" class="item-detail-text-label">Text</label>
+              <textarea id="item-detail-text-${index}" class="item-detail-text" rows="10">${text}</textarea>
             </div>
             <div class="row">
               <p class="item-text-nums">characters : ${text.length}</p>
             </div>
             <div class="row">
-              <div class="btn btn-default full save-item">Edit</div>
+              <div id="edit-button-${index}" class="btn btn-default full">Edit</div>
             </div>
           </div>
         </div>
@@ -123,28 +122,30 @@ function renderItems() {
     .then(function(store) {
       var section = document.querySelector("section.section-items");
       var items = '';
-      store.data.forEach(function(data) {
-        items += getItemString(data);
+      store.data.forEach(function(data, index) {
+        items += getItemString({
+          name: data.name,
+          text: data.text,
+          index
+        });
       });
       section.innerHTML = items;
     })
     .then(function() {
-      (function() {
-        var items = document.querySelectorAll(".item-name");
+      var items = document.querySelectorAll(".item-name");
 
-        items.forEach(function(item) {
-          item.addEventListener("click", function() {
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            if (panel.style.maxHeight) {
-                panel.style.maxHeight = null;
-            } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-            }
-          });
+      items.forEach(function(item) {
+        item.addEventListener("click", function() {
+          this.classList.toggle("active");
+          var panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+              panel.style.maxHeight = null;
+          } else {
+              panel.style.maxHeight = panel.scrollHeight + "px";
+          }
         });
-      })();
-    })
+      });
+    });
 }
 
 function saveNewItem({ name, text }) {
@@ -161,4 +162,11 @@ function saveNewItem({ name, text }) {
   })
 }
 
-initialize();
+/* This is main function start beginning */
+
+function main() {
+  initialize();
+  renderItems();
+};
+
+main();
