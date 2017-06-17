@@ -11,9 +11,13 @@
   },
   "permissions": [
     "activeTab",
+    "contextMenus",
     "storage"
   ],
+  "icons": {
+    "16": "icon.png"
+  },
   "background": {
-    "scripts": ["hot-reload.js"]
+    "scripts": ["hot-reload.js", "innerPage.js"]
   }
 }
