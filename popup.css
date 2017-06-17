@@ -62,7 +62,13 @@ p {
 
 /* --------- BUTTONS --------- */
 
+button {
+  outline: none;
+  border: none;
+}
+
 .btn {
+  background-color: #fff;
   display: inline-block;
   font-size: 90%;
   text-align: center;
@@ -143,13 +149,21 @@ p {
 
 /* --------- INPUTS --------- */
 
-textarea {
+textarea,
+input[type=text] {
   margin: 10px 0 0 0;
   width: 100%;
   padding: 7px;
   border-radius: 3px;
   border: 1px solid #ccc;
   font-size: 85%;
+}
+
+/* --------- LABEL --------- */
+
+label {
+  display: block;
+  font-size: 90%;
 }
 
 /* --------- SIZE --------- */
@@ -175,6 +189,10 @@ textarea {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
+}
+
+.new-item-buttons {
+  text-align: center;
 }
 
 /* ----------------------------------------------- */
