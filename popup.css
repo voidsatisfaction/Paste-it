@@ -1,6 +1,7 @@
 /*
 
 main color: #3A539B
+darker main color: #2d4373
 item color: #dfe3ee
 white: #fff
 
@@ -30,20 +31,21 @@ body {
 
 .container {
   width: 400px;
-  max-height: 800px;
-  overflow-y: auto;
+  height: 800px;
+  overflow-y: scroll;
 }
 
 /* ----------------------------------------------- */
 /* REUSABLE COMPONENT */
 /* ----------------------------------------------- */
+
 section {
-    padding: 20px 0;
+  padding: 10px 0;
 }
 
 .row {
-    max-width: 400px;
-    margin: 0 auto;
+  max-width: 400px;
+  margin: 10px auto;
 }
 
 /* --------- HEADINGS --------- */
@@ -52,14 +54,23 @@ h1 {
   font-weight: 200;
 }
 
+/* --------- P --------- */
+
+p {
+  margin: 10px 0;
+}
+
 /* --------- BUTTONS --------- */
 
 .btn {
   display: inline-block;
+  font-size: 90%;
+  text-align: center;
   padding: 10px 40px;
   border-radius: 200px;
   font-weight: 200;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .btn-default {
@@ -67,10 +78,14 @@ h1 {
   border: 1px solid #3b5998;
 }
 
+.btn-default:hover {
+  background-color: #3b5998;
+  color: #fff;
+}
+
 .btn-full {
   color: #fff;
   background-color: #3b5998;
-  transition: background-color, 0.2s;
 }
 
 .btn-full:hover {
@@ -79,22 +94,93 @@ h1 {
 
 /* --------- ITEM --------- */
 
+.item {
+  width: 100%;
+  min-height: 50px;
+}
+
+.item-name {
+  width: 100%;
+  height: 50px;
+  background-color: #dfe3ee;
+  border: none;
+  border-bottom: 1px solid #f7f7f7;
+  color: #555;
+  cursor: pointer;
+  outline: none;
+  font-size: 90%;
+  padding: 5px 18px;
+  text-align: left;
+  transition: 0.4s;
+}
+
+.item-name:hover,
+.item-name.active {
+  color: #fff;
+  background-color: #8b9dc3;
+}
+
+.item-name:after {
+  content: '\25b6';
+  font-size: 80%;
+  color: #555;
+  float: left;
+  margin-right: 7px;
+}
+
+.item-name.active:after {
+  content: '\25bc';
+}
+
+.item-detail {
+  padding: 0 18px;
+  background-color: #fff;
+  font-size: 80%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+/* --------- INPUTS --------- */
+
+textarea {
+  margin: 10px 0 0 0;
+  width: 100%;
+  padding: 7px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  font-size: 85%;
+}
+
+/* --------- SIZE --------- */
+
+.full {
+  width: 100%;
+}
+
 /* ----------------------------------------------- */
 /* HEADER */
 /* ----------------------------------------------- */
 
 .header-buttons {
+  padding-top: 10px;
   width: 100%;
   text-align: center;
+}
+
+.new-item {
+  padding: 0 18px;
+  background-color: #fff;
+  font-size: 80%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
 }
 
 /* ----------------------------------------------- */
 /* ITEMS */
 /* ----------------------------------------------- */
 
-section.items {
-  background-color: #dfe3ee
-}
 
 /* ----------------------------------------------- */
 /* FOOTER */
