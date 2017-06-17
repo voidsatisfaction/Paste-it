@@ -128,7 +128,7 @@ button {
 }
 
 .item-name:after {
-  content: '\25b6';
+  content: '\25b8';
   font-size: 80%;
   color: #555;
   float: left;
@@ -136,7 +136,7 @@ button {
 }
 
 .item-name.active:after {
-  content: '\25bc';
+  content: '\25be';
 }
 
 .item-detail {
