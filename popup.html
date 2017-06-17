@@ -3,28 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="vendors/css/normalize.css">
   <link rel="stylesheet" type="text/css" href="popup.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:100,300,300i,400" rel="stylesheet">
   <title>Paste it popup</title>
 </head>
 <body>
   <div class="container">
-    <!-- buttons -->
-    <section class="header">
+    <!-- HEADER -->
+    <section class="section-header">
       <div class="row">
         <div class="header-buttons">
-          <div class="btn btn-full add-btn">
+          <button class="btn btn-full add-btn">
             + Add Item
-          </div>
-          <div class="btn btn-full delete-all-btn">
+          </button>
+          <button class="btn btn-full delete-all-btn">
             - Delete All
-          </div>
+          </button>
+        </div>
+      </div>
+      <div class="new-item">
+        <div class="row">
+          <label class="new-item-name-label" for="new-item-name">Name</label>
+          <input type="text" id="new-item-name" class="new-item-name full" required/>
+        </div>
+        <div class="row">
+          <label class="new-item-text-label" for="new-item-text">Text</label>
+          <textarea class="new-item-text" rows="10"></textarea>
+        </div>
+        <div class="row">
+          <p class="new-item-text-nums">words : 0</p>
+        </div>
+        <div class="row new-item-buttons">
+          <button class="btn btn-default item-add">Add</button>
+          <button class="btn btn-default item-cancel">Cancel</button>
         </div>
       </div>
     </section>
-    <!-- items -->
-    <section class="items">
-      <div class="row">
-        
+    <!-- ITEMS -->
+    <section class="section-items">
+      <div class="item">
+        <button class="item-name">Address</button>
+        <div class="item-detail">
+          <div class="row">
+            <label class="item-detail-text-label" for="item-detail-text">Text</label>
+            <textarea id="item-detail-text" class="item-detail-text" rows="10">
+              Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+              Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+            </textarea>
+          </div>
+          <div class="row">
+            <p class="item-text-nums">words : 100</p>
+          </div>
+          <div class="row">
+            <div class="btn btn-default full item-edit">Edit</div>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <button class="item-name">Address</button>
+        <div class="item-detail">
+          <p>
+            Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+            Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+          </p>
+        </div>
       </div>
     </section>
     <!-- footer -->
