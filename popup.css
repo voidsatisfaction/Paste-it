@@ -31,7 +31,7 @@ body {
 
 .container {
   width: 400px;
-  height: 800px;
+  height: 650px;
   overflow-y: scroll;
 }
 
@@ -63,6 +63,8 @@ p {
 /* --------- BUTTONS --------- */
 
 button {
+  font-family: 'Lato', 'Arial', sans-serif;
+  font-weight: 300;
   outline: none;
   border: none;
 }
@@ -74,7 +76,6 @@ button {
   text-align: center;
   padding: 10px 40px;
   border-radius: 200px;
-  font-weight: 200;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -151,6 +152,8 @@ button {
 
 textarea,
 input[type=text] {
+  font-family: 'Lato', 'Arial', sans-serif;
+  font-weight: 300;
   margin: 10px 0 0 0;
   width: 100%;
   padding: 7px;
