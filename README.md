@@ -21,7 +21,8 @@ I just created Paste-it when I just keep doing copy and paste my resume in enrol
 
 - HTML / CSS
 - Vanilla javascript(with redux style)
-- chrome storage sync
+- Chrome storage sync
+- Zenhub
 
 ## 5. Architecture
 
