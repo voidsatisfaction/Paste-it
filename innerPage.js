@@ -1,27 +1,79 @@
-// Copyright (c) 2010 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// A generic onclick callback function.
-function genericOnClick(info, tab) {
-  console.log("item " + info.menuItemId + " was clicked");
-  console.log("info: " + JSON.stringify(info));
-  console.log("tab: " + JSON.stringify(tab));
-  chrome.storage.sync.get(function(store) {
-    alert(store.data[0].text);
+function getStore() {
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.storage.sync.get(function(store) {
+        resolve(store);
+      }); 
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
-// Create one test item for each context type.
-var contexts = ["page","selection","link","editable","image","video",
-                "audio"];
-for (var i = 0; i < contexts.length; i++) {
-  var context = contexts[i];
-  var title = "Test '" + context + "' menu item";
-  var id = chrome.contextMenus.create({"title": title, "contexts":[context],
-                                       "onclick": genericOnClick});
-  console.log("'" + context + "' item:" + id);
+function listenPopup() {
+  chrome.extension.onConnect.addListener(function(port) {
+    port.onMessage.addListener(function(action) {
+      switch (action.type) {
+        case 'ADD_ITEM':
+          initialize();
+          break;
+        default:
+          break;
+      }
+    });
+  });
 }
+
+function initialize() {
+  function itemMenuOnClick(info, tab) {
+    chrome.storage.sync.get(function(store) {
+      alert(store.data[0].text);
+    });
+  }
+
+  function renderItemMenu(currentStore) {
+    if (currentStore.data.length !== beforeStore.data.length) {
+      currentStore.data.forEach(function(item) {
+        chrome.contextMenus.create({
+          title: item.name,
+          "contexts": ["editable"],
+          "onclick": itemMenuOnClick,
+        }); 
+      });
+      beforeStore = currentStore;
+      return; 
+    }
+  }
+
+  function removeAllMenus(currentStore) {
+    return new Promise(function(resolve, reject) {
+      chrome.contextMenus.removeAll(function() {
+        resolve(currentStore);
+      });
+    });
+  }
+
+  var beforeStore = beforeStore || {data:[]};
+
+  getStore()
+    .then(removeAllMenus)
+    .then(renderItemMenu);
+}
+
+initialize();
+listenPopup();
+
+// var contexts = ["page","selection","link","editable","image","video","audio"];
+// for (var i = 0; i < contexts.length; i++) {
+//   var context = contexts[i];
+//   var title = "Test '" + context + "' menu item";
+//   var id = chrome.contextMenus.create({
+//     title,
+//     "contexts": [context],
+//     "onclick": genericOnClick,
+//   });
+//   console.log("'" + context + "' item:" + id);
+// }
 
 
 // // Create a parent item and two children.
