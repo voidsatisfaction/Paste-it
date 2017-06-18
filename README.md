@@ -6,7 +6,11 @@ Save some texts for tedious copy and paste on your google chrome storage and reu
 
 ## 2. Motivation
 
-I just created Paste-it when I just keep doing copy and paste my resume in enrolling internships..
+When I keep doing copy and paste some texts to my resume for enrolling internships, I thought that this simple repeated working is not productive at all and even makes me boring.
+
+Therefore I just made Paste-it to stay me lazy.
+
+Laziness is good for all Programmer. Isn't it?
 
 ## 3. How to implement locally
 
@@ -56,7 +60,7 @@ This part manipulates isolated DOM causing changing actual DOM.
 
 ## 6. For more info
 
-I strongly suggest that those who have interests of this project should read this document first.
+I strongly suggest that those who have interests in this project should read this document first.
 
 - [Whar are extesnions? - chrome developer](https://developer.chrome.com/extensions)
 
