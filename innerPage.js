@@ -3,7 +3,7 @@ function getStore() {
     try {
       chrome.storage.sync.get(function(store) {
         resolve(store);
-      }); 
+      });
     } catch (error) {
       reject(error);
     }
@@ -27,14 +27,29 @@ function listenPopup() {
 function initialize() {
   function itemMenuOnClick(info, tab) {
     chrome.storage.sync.get(function(store) {
-      alert(store.data[0].text);
+      var queryInfo = {
+        active: true,
+        windowId: chrome.windows.WINDOW_ID_CURRENT
+      }
+      chrome.tabs.query(queryInfo, function(tabs) {
+          console.log(tabs);
+          chrome.tabs.sendMessage(tabs[0].id, {
+              color: 'red'
+          },
+          function(msg) {
+            console.log("result message:", msg);
+          });
+      });
+
+      // chrome.tabs.executeScript(null, {file: "content_script.js"});
     });
   }
 
   function renderItemMenu(currentStore) {
     if (currentStore.data.length !== beforeStore.data.length) {
-      currentStore.data.forEach(function(item) {
+      currentStore.data.forEach(function(item,index) {
         chrome.contextMenus.create({
+          id: String(index),
           title: item.name,
           "contexts": ["editable"],
           "onclick": itemMenuOnClick,
