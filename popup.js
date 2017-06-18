@@ -1,14 +1,26 @@
 /*
 
-store structure
+Data Structure
 
 store = {
   data: [
     { name: string, text: string }
   ]
-}
+};
+
+action = {
+  type: string(Capital),
+  payload: object
+};
 
 */
+
+/* ACTION CONSTANTS */
+var ADD_ITEM = 'ADD_ITEM';
+
+function actionCreator({ type, payload }) {
+  return { type, payload };
+}
 
 /* ----------------------------------------------- */
 /* DB / CRUD */
@@ -24,7 +36,10 @@ store = {
     saveNewItem({ name, text })
       .then(renderItems)
       .then(function() {
-        console.log('save and render is done');
+        var port = chrome.extension.connect({
+          name: 'sample connection'
+        });
+        port.postMessage(actionCreator({ type: 'ADD_ITEM' }));
       });
   });
 })();
@@ -76,16 +91,6 @@ store = {
 /* ----------------------------------------------- */
 /* TOOLS */
 /* ----------------------------------------------- */
-
-function initialize() {
-  chrome.storage.sync.set({
-    data: [
-      /*
-      { name: ... , text: ... }
-      */
-    ]
-  })
-}
 
 function renderItems() {
   function getItemString({ name, text, index }) {
@@ -162,10 +167,19 @@ function saveNewItem({ name, text }) {
   })
 }
 
+function initialize() {
+  chrome.storage.sync.set({
+    data: [
+      /*
+      { name: ... , text: ... }
+      */
+    ]
+  })
+}
+
 /* This is main function start beginning */
 
 function main() {
-  initialize();
   renderItems();
 };
 
