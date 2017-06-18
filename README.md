@@ -2,7 +2,7 @@
 
 ## 1. Abstract
 
-Save some tedious copy and paste texts to your google chrome storage and reuse any time!!
+Save some texts for tedious copy and paste on your google chrome storage and reuse any time any where using your chrome browser!!
 
 ## 2. Motivation
 
@@ -35,9 +35,9 @@ Popup / Background / Content script
 
 `file: popup.js`
 
-This part fully control the popup section managing its UI and inner logics
+This part fully control the popup section managing its UI and inner logics.
 
-And, it also linked to the Background sending actions.
+And, it linked to the Background section sending actions to make background some logics as well.
 
 (It is inspired by redux)
 
