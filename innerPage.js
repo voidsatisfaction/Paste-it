@@ -1,3 +1,7 @@
+/* ----------------------------------------------- */
+/* HELPER */
+/* ----------------------------------------------- */
+
 function getStore() {
   return new Promise(function(resolve, reject) {
     try {
@@ -10,11 +14,18 @@ function getStore() {
   });
 }
 
+/* ----------------------------------------------- */
+/* LISTENER */
+/* ----------------------------------------------- */
+
 function listenPopup() {
   chrome.extension.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(action) {
       switch (action.type) {
         case 'ADD_ITEM':
+          initialize();
+          break;
+        case 'DELETE_ALL':
           initialize();
           break;
         default:
@@ -23,6 +34,10 @@ function listenPopup() {
     });
   });
 }
+
+/* ----------------------------------------------- */
+/* LOGICS */
+/* ----------------------------------------------- */
 
 function initialize() {
   function itemMenuOnClick(info, tab) {

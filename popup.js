@@ -16,11 +16,18 @@ action = {
 */
 
 /* ACTION CONSTANTS */
+
 var ADD_ITEM = 'ADD_ITEM';
-var RENDER_MENUS = 'RENDER_MENUS';
+var DELETE_ALL = 'DELETE_ALL';
 
 function actionCreator({ type, payload }) {
   return { type, payload };
+}
+
+/* SEND ACTION TO BACKGROUND */
+
+function sendActionToBackground({ type, payload }) {
+  port.postMessage(actionCreator({ type, payload }))
 }
 
 /* ----------------------------------------------- */
@@ -49,7 +56,10 @@ function actionCreator({ type, payload }) {
     this.classList.toggle("active");
     
     deleteAllItems()
-      .then(renderItems);
+      .then(renderItems)
+      .then(function() {
+        port.postMessage(actionCreator({ type: 'DELETE_ALL' }));
+      });
   });
 })();
 
