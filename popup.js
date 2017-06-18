@@ -15,6 +15,7 @@ action = {
 
 */
 
+/* ACTION CONSTANTS */
 var ADD_ITEM = 'ADD_ITEM';
 
 function actionCreator({ type, payload }) {
@@ -166,8 +167,6 @@ function saveNewItem({ name, text }) {
   })
 }
 
-/* This is main function start beginning */
-
 function initialize() {
   chrome.storage.sync.set({
     data: [
@@ -178,8 +177,9 @@ function initialize() {
   })
 }
 
+/* This is main function start beginning */
+
 function main() {
-  initialize();
   renderItems();
 };
 
