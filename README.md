@@ -49,6 +49,8 @@ It takes care of app's background logics
 
 ### Content script
 
+`file: content_script.js`
+
 This part manipulates isolated DOM causing changing actual DOM.
 
 ## 6. For more info
