@@ -16,10 +16,18 @@ action = {
 */
 
 /* ACTION CONSTANTS */
+
 var ADD_ITEM = 'ADD_ITEM';
+var DELETE_ALL = 'DELETE_ALL';
 
 function actionCreator({ type, payload }) {
   return { type, payload };
+}
+
+/* SEND ACTION TO BACKGROUND */
+
+function sendActionToBackground({ type, payload }) {
+  port.postMessage(actionCreator({ type, payload }))
 }
 
 /* ----------------------------------------------- */
@@ -36,10 +44,21 @@ function actionCreator({ type, payload }) {
     saveNewItem({ name, text })
       .then(renderItems)
       .then(function() {
-        var port = chrome.extension.connect({
-          name: 'sample connection'
-        });
         port.postMessage(actionCreator({ type: 'ADD_ITEM' }));
+      });
+  });
+})();
+
+(function() {
+  var deleteAllBtn = document.querySelector(".delete-all-btn")
+
+  deleteAllBtn.addEventListener("click", function() {
+    this.classList.toggle("active");
+    
+    deleteAllItems()
+      .then(renderItems)
+      .then(function() {
+        port.postMessage(actionCreator({ type: 'DELETE_ALL' }));
       });
   });
 })();
@@ -62,15 +81,10 @@ function actionCreator({ type, payload }) {
   });
 })();
 
+
 /* ----------------------------------------------- */
 /* ITEMS */
 /* ----------------------------------------------- */
-
-(function() {
-  var section = document.querySelector("section.section-items");
-
-  section.innerHTML
-})();
 
 (function() {
   var items = document.querySelectorAll(".item-name");
@@ -167,14 +181,21 @@ function saveNewItem({ name, text }) {
   })
 }
 
-function initialize() {
-  chrome.storage.sync.set({
-    data: [
-      /*
-      { name: ... , text: ... }
-      */
-    ]
-  })
+function deleteAllItems() {
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.storage.sync.set({
+        data: [
+          /*
+          { name: ... , text: ... }
+          */
+        ]
+      })
+      resolve();
+    } catch(error) {
+      console.error(error);
+    }
+  });
 }
 
 /* This is main function start beginning */
@@ -182,5 +203,9 @@ function initialize() {
 function main() {
   renderItems();
 };
+
+var port = chrome.extension.connect({
+  name: 'popup-backround-connection'
+});
 
 main();
