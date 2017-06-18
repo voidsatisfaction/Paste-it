@@ -27,21 +27,14 @@ function listenPopup() {
 function initialize() {
   function itemMenuOnClick(info, tab) {
     chrome.storage.sync.get(function(store) {
-      var queryInfo = {
-        active: true,
-        windowId: chrome.windows.WINDOW_ID_CURRENT
-      }
-      chrome.tabs.query(queryInfo, function(tabs) {
-          console.log(tabs);
-          chrome.tabs.sendMessage(tabs[0].id, {
-              color: 'red'
-          },
-          function(msg) {
-            console.log("result message:", msg);
-          });
+      var itemIndex = Number(info.menuItemId);
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'ADD_ITEM',
+        item: store.data[itemIndex]
+      },
+      function(msg) {
+        console.log("result message:", msg);
       });
-
-      // chrome.tabs.executeScript(null, {file: "content_script.js"});
     });
   }
 
