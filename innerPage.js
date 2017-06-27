@@ -14,6 +14,30 @@ function getStore() {
   });
 }
 
+function setStore(store) {
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.storage.sync.set(store);
+      resolve('saved');
+    } catch(error) {
+      reject(error);
+    }
+  });
+}
+
+function editItem({ payload: { id, text } }) {
+  return getStore()
+    .then(function(store) {
+      store.data[id].text = text;
+      return store;
+    })
+    .then(setStore)
+    .catch(function(error) {
+      console.error('There is a something wrong with store')
+      console.error(error);
+    });
+}
+
 /* ----------------------------------------------- */
 /* LISTENER */
 /* ----------------------------------------------- */
@@ -27,6 +51,9 @@ function listenPopup() {
           break;
         case 'DELETE_ALL':
           initialize();
+          break;
+        case 'EDIT_ITEM':
+          editItem(action);
           break;
         default:
           break;
@@ -58,7 +85,7 @@ function initialize() {
       currentStore.data.forEach(function(item,index) {
         chrome.contextMenus.create({
           id: String(index),
-          title: item.name,
+          title: item.name || 'unknown',
           "contexts": ["editable"],
           "onclick": itemMenuOnClick,
         }); 
