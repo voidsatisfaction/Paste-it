@@ -18,6 +18,7 @@ action = {
 /* ACTION CONSTANTS */
 
 var ADD_ITEM = 'ADD_ITEM';
+var EDIT_ITEM = 'EDIT_ITEM';
 var DELETE_ALL = 'DELETE_ALL';
 
 function actionCreator({ type, payload }) {
@@ -50,7 +51,7 @@ function sendActionToBackground({ type, payload }) {
 })();
 
 (function() {
-  var deleteAllBtn = document.querySelector(".delete-all-btn")
+  var deleteAllBtn = document.querySelector(".delete-all-btn");
 
   deleteAllBtn.addEventListener("click", function() {
     this.classList.toggle("active");
@@ -68,7 +69,7 @@ function sendActionToBackground({ type, payload }) {
 /* ----------------------------------------------- */
 
 (function() {
-  var addItem = document.querySelector(".add-btn")
+  var addItem = document.querySelector(".add-btn");
 
   addItem.addEventListener("click", function() {
     this.classList.toggle("active");
@@ -113,8 +114,10 @@ function sendActionToBackground({ type, payload }) {
   });
 })();
 
+/* ITEM DETAIL */
+
 /* ----------------------------------------------- */
-/* TOOLS */
+/* RENDER */
 /* ----------------------------------------------- */
 
 function renderItems() {
@@ -131,7 +134,7 @@ function renderItems() {
               <p class="item-text-nums">characters : ${text.length}</p>
             </div>
             <div class="row">
-              <div id="edit-button-${index}" class="btn btn-default full">Edit</div>
+              <div id="edit-button-${index}" class="btn btn-default full item-edit-button">Edit</div>
             </div>
           </div>
         </div>
@@ -175,6 +178,23 @@ function renderItems() {
           }
         });
       });
+    })
+    .then(function() {
+      var editButtons = document.querySelectorAll(".item-edit-button");
+      editButtons.forEach(function(editButton, i) {
+        editButton.addEventListener("click", function() {
+          console.log('clicked');
+          var innerText = document.querySelector("#item-detail-text-" + i).value;
+          var action = {
+            type: EDIT_ITEM,
+            payload: {
+              id: i,
+              text: innerText,
+            },
+          }
+          sendActionToBackground(action);
+        });
+      });
     });
 }
 
@@ -209,7 +229,9 @@ function deleteAllItems() {
   });
 }
 
-/* This is main function start beginning */
+/* ----------------------------------------------- */
+/* MAIN */
+/* ----------------------------------------------- */
 
 function main() {
   renderItems();
