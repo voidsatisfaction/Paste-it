@@ -81,6 +81,17 @@ function sendActionToBackground({ type, payload }) {
   });
 })();
 
+(function() {
+  var cancelButton = document.querySelector(".cancel-button")
+  var addItem = document.querySelector(".add-btn")
+
+  cancelButton.addEventListener("click", function() {
+    addItem.classList.toggle("active");
+    var panel = document.querySelector(".new-item");
+    panel.style.maxHeight = null;
+  });
+})();
+
 
 /* ----------------------------------------------- */
 /* ITEMS */
