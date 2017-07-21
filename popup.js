@@ -153,8 +153,10 @@ function renderItems() {
       console.error(err);
     })
     .then(function(store) {
+      /* Item block added */
       var section = document.querySelector("section.section-items");
       var items = '';
+      console.log(store);
       store.data.forEach(function(data, index) {
         items += getItemString({
           name: data.name,
@@ -165,6 +167,7 @@ function renderItems() {
       section.innerHTML = items;
     })
     .then(function() {
+      /* item onclick event listener css js effects */
       var items = document.querySelectorAll(".item-name");
 
       items.forEach(function(item) {
@@ -180,10 +183,10 @@ function renderItems() {
       });
     })
     .then(function() {
+      /* editbutton onClick event */
       var editButtons = document.querySelectorAll(".item-edit-button");
       editButtons.forEach(function(editButton, i) {
         editButton.addEventListener("click", function() {
-          console.log('clicked');
           var innerText = document.querySelector("#item-detail-text-" + i).value;
           var action = {
             type: EDIT_ITEM,
