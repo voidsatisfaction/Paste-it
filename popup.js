@@ -42,11 +42,7 @@ function sendActionToBackground({ type, payload }) {
     var name = document.querySelector("#new-item-name").value;
     var text = document.querySelector("#new-item-text").value;
     
-    saveNewItem({ name, text })
-      .then(renderItems)
-      .then(function() {
-        sendActionToBackground({ type: 'ADD_ITEM' });
-      });
+    sendActionToBackground({ type: 'ADD_ITEM', payload: { name, text } });
   });
 })();
 
@@ -199,37 +195,6 @@ function renderItems() {
     });
 }
 
-function saveNewItem({ name, text }) {
-  return new Promise(function(resolve, reject) {
-    chrome.storage.sync.get(function(store) {
-      store.data.push({ name, text });
-
-      store = Object.assign({},store);
-
-      chrome.storage.sync.set(store);
-
-      resolve(store);
-    });
-  })
-}
-
-function deleteAllItems() {
-  return new Promise(function(resolve, reject) {
-    try {
-      chrome.storage.sync.set({
-        data: [
-          /*
-          { name: ... , text: ... }
-          */
-        ]
-      })
-      resolve();
-    } catch(error) {
-      console.error(error);
-    }
-  });
-}
-
 /* ----------------------------------------------- */
 /* BACKGROUND EVENT COMMUNICATION */
 /* ----------------------------------------------- */
@@ -241,11 +206,10 @@ var port = chrome.extension.connect({
 port.onMessage.addListener(function(action) {
   switch (action.type) {
     case 'ADD_ITEM_SUCCESS':
-      console.log('나방은 무서워')
+      renderItems();
       break;
     case 'DELETE_ALL_ITEMS_SUCCESS':
       renderItems();
-      console.log('deleted all');
     default:
       break;
   }

@@ -212,7 +212,8 @@ function listenPopup() {
     port.onMessage.addListener(function(action) {
       switch (action.type) {
         case 'ADD_ITEM':
-          render()
+          saveNewItem(action)
+            .then(render)
             .then(sendActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
           break;
         case 'DELETE_ALL_ITEMS':
