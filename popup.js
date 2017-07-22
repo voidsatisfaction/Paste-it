@@ -56,11 +56,7 @@ function sendActionToBackground({ type, payload }) {
   deleteAllBtn.addEventListener("click", function() {
     this.classList.toggle("active");
     
-    deleteAllItems()
-      .then(renderItems)
-      .then(function() {
-        sendActionToBackground({ type: 'DELETE_ALL_ITEMS' });
-      });
+    sendActionToBackground({ type: 'DELETE_ALL_ITEMS' });
   });
 })();
 
@@ -143,15 +139,15 @@ function renderItems() {
 
   var getStore = new Promise(function(resolve, reject) {
     chrome.storage.sync.get(function(store) {
-      resolve(store);
+      try {
+        resolve(store);
+      } catch(error) {
+        reject(error);
+      }
     });
   });
 
   return getStore
-    .catch(function(err) {
-      console.error('chrome storage error!');
-      console.error(err);
-    })
     .then(function(store) {
       /* Item block added */
       var section = document.querySelector("section.section-items");
@@ -197,6 +193,9 @@ function renderItems() {
           sendActionToBackground(action);
         });
       });
+    })
+    .catch(function(error) {
+      console.error(error);
     });
 }
 
@@ -244,7 +243,9 @@ port.onMessage.addListener(function(action) {
     case 'ADD_ITEM_SUCCESS':
       console.log('나방은 무서워')
       break;
-  
+    case 'DELETE_ALL_ITEMS_SUCCESS':
+      renderItems();
+      console.log('deleted all');
     default:
       break;
   }

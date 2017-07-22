@@ -9,6 +9,7 @@ var localStore = { data: [] };
 /* ----------------------------------------------- */
 
 var ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
+var DELETE_ALL_ITEMS_SUCCESS = 'DELETE_ALL_ITEMS_SUCCESS';
 
 function actionCreator({ type, payload }) {
   return { type, payload };
@@ -93,31 +94,6 @@ function deleteAllItems() {
     } catch(error) {
       reject(error);
     }
-  });
-}
-
-/* ----------------------------------------------- */
-/* POPUP EVENT COMMUNICATION */
-/* ----------------------------------------------- */
-
-function listenPopup() {
-  chrome.extension.onConnect.addListener(function(port) {
-    port.onMessage.addListener(function(action) {
-      switch (action.type) {
-        case 'ADD_ITEM':
-          render()
-            .then(sendActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
-          break;
-        case 'DELETE_ALL_ITEMS':
-          render();
-          break;
-        case 'EDIT_ITEM':
-          editItem(action);
-          break;
-        default:
-          break;
-      }
-    });
   });
 }
 
@@ -224,6 +200,34 @@ function initialize() {
     .then(removeAllMenus)
     .then(createItemMenu)
     .then(renderLocalStore);
+}
+
+
+/* ----------------------------------------------- */
+/* POPUP EVENT COMMUNICATION */
+/* ----------------------------------------------- */
+
+function listenPopup() {
+  chrome.extension.onConnect.addListener(function(port) {
+    port.onMessage.addListener(function(action) {
+      switch (action.type) {
+        case 'ADD_ITEM':
+          render()
+            .then(sendActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
+          break;
+        case 'DELETE_ALL_ITEMS':
+          deleteAllItems()
+            .then(render)
+            .then(sendActionToPopup(port, { type: DELETE_ALL_ITEMS_SUCCESS }));
+          break;
+        case 'EDIT_ITEM':
+          editItem(action);
+          break;
+        default:
+          break;
+      }
+    });
+  });
 }
 
 initialize();
