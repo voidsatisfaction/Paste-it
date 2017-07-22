@@ -32,7 +32,23 @@ function dispatchActionToBackground({ type, payload }) {
 }
 
 /* ----------------------------------------------- */
-/* DB / CRUD */
+/* STORE HELPER */
+/* ----------------------------------------------- */
+
+function getStore() {
+  return new Promise(function(resolve, reject) {
+    chrome.storage.sync.get(function(store) {
+      try {
+        resolve(store);
+      } catch(error) {
+        reject(error);
+      }
+    });
+  });
+} 
+
+/* ----------------------------------------------- */
+/* HEADER */
 /* ----------------------------------------------- */
 
 (function() {
@@ -55,10 +71,6 @@ function dispatchActionToBackground({ type, payload }) {
     dispatchActionToBackground({ type: 'DELETE_ALL_ITEMS' });
   });
 })();
-
-/* ----------------------------------------------- */
-/* HEADER */
-/* ----------------------------------------------- */
 
 (function() {
   var addItem = document.querySelector(".add-btn");
@@ -94,45 +106,24 @@ function dispatchActionToBackground({ type, payload }) {
 /* TEXT REALTIME COUNTS */
 
 (function() {
-  function onInput(e) {
-    var characterNums = e.target.value.length;
-    var wordNums = e.target.value.split(' ').length;
+  function onInputWrapper(node) {
+    return function(e) {
+      var characterNums = e.target.value.length;
+      var wordNums = e.target.value.split(' ').length;
 
-    var sentence = `characters: ${characterNums}`;
-    newItemTextNums.textContent = sentence;
+      var sentence = `characters: ${characterNums}`;
+      node.textContent = sentence;
+    };
   }
 
   var newItemTextarea = document.querySelector("#new-item-text");
   var newItemTextNums = document.querySelector("#new-item-text-nums");
 
-  newItemTextarea.addEventListener("input", onInput);
+  newItemTextarea.addEventListener("input", onInputWrapper(newItemTextNums));
 })();
 
-
 /* ----------------------------------------------- */
-/* ITEMS */
-/* ----------------------------------------------- */
-
-(function() {
-  var items = document.querySelectorAll(".item-name");
-
-  items.forEach(function(item) {
-    item.addEventListener("click", function() {
-      this.classList.toggle("active");
-      var panel = this.nextElementSibling;
-      if (panel.style.maxHeight) {
-          panel.style.maxHeight = null;
-      } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-      }
-    });
-  });
-})();
-
-/* ITEM DETAIL */
-
-/* ----------------------------------------------- */
-/* RENDER */
+/* RENDER ITEMS */
 /* ----------------------------------------------- */
 
 function renderItems() {
@@ -146,7 +137,7 @@ function renderItems() {
               <textarea id="item-detail-text-${index}" class="item-detail-text" rows="10">${text}</textarea>
             </div>
             <div class="row">
-              <p class="item-text-nums">characters : ${text.length}</p>
+              <p id="item-detail-text-nums-${index}" class="item-text-nums">characters : ${text.length}</p>
             </div>
             <div class="row">
               <div id="edit-button-${index}" class="btn btn-default full item-edit-button">Edit</div>
@@ -156,30 +147,44 @@ function renderItems() {
       `;
   }
 
-  var getStore = new Promise(function(resolve, reject) {
-    chrome.storage.sync.get(function(store) {
-      try {
-        resolve(store);
-      } catch(error) {
-        reject(error);
-      }
-    });
-  });
-
-  return getStore
-    .then(function(store) {
-      /* Item block added */
-      var section = document.querySelector("section.section-items");
-      var items = '';
-      store.data.forEach(function(data, index) {
-        items += getItemString({
-          name: data.name,
-          text: data.text,
-          index
-        });
+  /* Item elements added */
+  function createItemsList(store) {
+    var section = document.querySelector("section.section-items");
+    var items = '';
+    store.data.forEach(function(data, index) {
+      items += getItemString({
+        name: data.name,
+        text: data.text,
+        index
       });
-      section.innerHTML = items;
-    })
+    });
+    section.innerHTML = items;
+    return store;
+  }
+
+  /* Item textarea characters count */
+  function countItemDetailCharacters(store) {
+    function onInputWrapper(node) {
+      return function(e) {
+        var characterNums = e.target.value.length;
+        var wordNums = e.target.value.split(' ').length;
+
+        var sentence = `characters: ${characterNums}`;
+        node.textContent = sentence;
+      };
+    }
+    
+    var itemDetailTexts = document.querySelectorAll(".item-detail-text");
+
+    itemDetailTexts.forEach(function(itemDetailText, i) {
+      var itemDetailTextNums = document.querySelector(`#item-detail-text-nums-${i}`);
+      itemDetailText.addEventListener("input", onInputWrapper(itemDetailTextNums));
+    });
+  }
+
+  return getStore()
+    .then(createItemsList)
+    .then(countItemDetailCharacters)
     .then(function() {
       /* item onclick event listener css js effects */
       var items = document.querySelectorAll(".item-name");
@@ -189,9 +194,9 @@ function renderItems() {
           this.classList.toggle("active");
           var panel = this.nextElementSibling;
           if (panel.style.maxHeight) {
-              panel.style.maxHeight = null;
+            panel.style.maxHeight = null;
           } else {
-              panel.style.maxHeight = panel.scrollHeight + "px";
+            panel.style.maxHeight = panel.scrollHeight + "px";
           }
         });
       });
