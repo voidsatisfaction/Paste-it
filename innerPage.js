@@ -1,5 +1,5 @@
 /* ----------------------------------------------- */
-/* STORE */
+/* LOCAL STORE */
 /* ----------------------------------------------- */
 
 var localStore = { data: [] };
@@ -47,6 +47,37 @@ function editItem({ payload: { id, text } }) {
     });
 }
 
+function saveNewItem({ payload: { name, text } }) {
+  return new Promise(function(resolve, reject) {
+    try {
+      localStore.data.push({ name, text });
+
+      chrome.storage.sync.set(localStore);
+
+      resolve(localStore);
+    } catch(error) {
+      reject(error);
+    }
+  });
+}
+
+function deleteAllItems() {
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.storage.sync.set({
+        data: [
+          /*
+          { name: ... , text: ... }
+          */
+        ]
+      })
+      resolve();
+    } catch(error) {
+      reject(error);
+    }
+  });
+}
+
 /* ----------------------------------------------- */
 /* LISTENER FROM POPUP */
 /* ----------------------------------------------- */
@@ -58,7 +89,7 @@ function listenPopup() {
         case 'ADD_ITEM':
           render();
           break;
-        case 'DELETE_ALL':
+        case 'DELETE_ALL_ITEMS':
           render();
           break;
         case 'EDIT_ITEM':
@@ -72,7 +103,7 @@ function listenPopup() {
 }
 
 /* ----------------------------------------------- */
-/* RENDER UP TO DATE */
+/* RENDER UPTO DATE */
 /* ----------------------------------------------- */
 
 function render() {
@@ -97,7 +128,7 @@ function render() {
     });
   }
 
-  function renderItemMenu(currentStore) {
+  function createItemMenu(currentStore) {
     currentStore.data.forEach(function(item,index) {
       chrome.contextMenus.create({
         id: String(index),
@@ -117,11 +148,9 @@ function render() {
     localStore = { data: [] };
   }
 
-  var localStore = localStore || { data:[] };
-
   getStore()
     .then(removeAllMenus)
-    .then(renderItemMenu)
+    .then(createItemMenu)
     .then(renderLocalStore)
     .catch((error) => {
       console.error('error occured on rendering!');

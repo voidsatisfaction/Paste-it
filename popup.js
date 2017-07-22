@@ -19,7 +19,7 @@ action = {
 
 var ADD_ITEM = 'ADD_ITEM';
 var EDIT_ITEM = 'EDIT_ITEM';
-var DELETE_ALL = 'DELETE_ALL';
+var DELETE_ALL_ITEMS = 'DELETE_ALL_ITEMS';
 
 function actionCreator({ type, payload }) {
   return { type, payload };
@@ -59,7 +59,7 @@ function sendActionToBackground({ type, payload }) {
     deleteAllItems()
       .then(renderItems)
       .then(function() {
-        port.postMessage(actionCreator({ type: 'DELETE_ALL' }));
+        port.postMessage(actionCreator({ type: 'DELETE_ALL_ITEMS' }));
       });
   });
 })();
