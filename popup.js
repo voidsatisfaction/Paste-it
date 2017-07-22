@@ -25,7 +25,7 @@ function actionCreator({ type, payload }) {
   return { type, payload };
 }
 
-/* SEND ACTION TO BACKGROUND */
+/* DISPATCH ACTION TO BACKGROUND */
 
 function dispatchActionToBackground({ type, payload }) {
   port.postMessage(actionCreator({ type, payload }));
@@ -74,6 +74,12 @@ function dispatchActionToBackground({ type, payload }) {
   });
 })();
 
+/* ----------------------------------------------- */
+/* HEADER DETAIL */
+/* ----------------------------------------------- */
+
+/* CANCEL BUTTON */
+
 (function() {
   var cancelButton = document.querySelector(".cancel-button")
   var addItem = document.querySelector(".add-btn")
@@ -83,6 +89,23 @@ function dispatchActionToBackground({ type, payload }) {
     var panel = document.querySelector(".new-item");
     panel.style.maxHeight = null;
   });
+})();
+
+/* TEXT REALTIME COUNTS */
+
+(function() {
+  function onInput(e) {
+    var characterNums = e.target.value.length;
+    var wordNums = e.target.value.split(' ').length;
+
+    var sentence = `characters: ${characterNums}`;
+    newItemTextNums.textContent = sentence;
+  }
+
+  var newItemTextarea = document.querySelector("#new-item-text");
+  var newItemTextNums = document.querySelector("#new-item-text-nums");
+
+  newItemTextarea.addEventListener("input", onInput);
 })();
 
 

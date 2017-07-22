@@ -15,13 +15,22 @@ function actionCreator({ type, payload }) {
   return { type, payload };
 }
 
-/* SEND ACTION TO POPUP */
+/* DISPATCH ACTION TO POPUP */
 
 function dispatchActionToPopup(port, { type, payload }) {
   return function() {
     port.postMessage(actionCreator({ type, payload }));
   }
 }
+
+/* DISPATCH ACTION TO CONTENT_SCRIPT */
+
+// function dispatchActionToContentScript({ type, payload }) {
+//   chrome.tabs.sendMessage(tab.id, {
+//     type: 'ADD_ITEM',
+//     item: store.data[itemIndex]
+//   });
+// }
 
 /* ----------------------------------------------- */
 /* HELPER */
