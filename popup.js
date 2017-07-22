@@ -27,7 +27,7 @@ function actionCreator({ type, payload }) {
 
 /* SEND ACTION TO BACKGROUND */
 
-function sendActionToBackground({ type, payload }) {
+function dispatchActionToBackground({ type, payload }) {
   port.postMessage(actionCreator({ type, payload }));
 }
 
@@ -42,7 +42,7 @@ function sendActionToBackground({ type, payload }) {
     var name = document.querySelector("#new-item-name").value;
     var text = document.querySelector("#new-item-text").value;
     
-    sendActionToBackground({ type: 'ADD_ITEM', payload: { name, text } });
+    dispatchActionToBackground({ type: 'ADD_ITEM', payload: { name, text } });
   });
 })();
 
@@ -52,7 +52,7 @@ function sendActionToBackground({ type, payload }) {
   deleteAllBtn.addEventListener("click", function() {
     this.classList.toggle("active");
     
-    sendActionToBackground({ type: 'DELETE_ALL_ITEMS' });
+    dispatchActionToBackground({ type: 'DELETE_ALL_ITEMS' });
   });
 })();
 
@@ -186,7 +186,7 @@ function renderItems() {
               text: innerText,
             },
           }
-          sendActionToBackground(action);
+          dispatchActionToBackground(action);
         });
       });
     })

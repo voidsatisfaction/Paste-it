@@ -17,7 +17,7 @@ function actionCreator({ type, payload }) {
 
 /* SEND ACTION TO POPUP */
 
-function sendActionToPopup(port, { type, payload }) {
+function dispatchActionToPopup(port, { type, payload }) {
   return function() {
     port.postMessage(actionCreator({ type, payload }));
   }
@@ -214,12 +214,12 @@ function listenPopup() {
         case 'ADD_ITEM':
           saveNewItem(action)
             .then(render)
-            .then(sendActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
+            .then(dispatchActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
           break;
         case 'DELETE_ALL_ITEMS':
           deleteAllItems()
             .then(render)
-            .then(sendActionToPopup(port, { type: DELETE_ALL_ITEMS_SUCCESS }));
+            .then(dispatchActionToPopup(port, { type: DELETE_ALL_ITEMS_SUCCESS }));
           break;
         case 'EDIT_ITEM':
           editItem(action);
