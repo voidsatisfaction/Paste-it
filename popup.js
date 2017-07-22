@@ -28,7 +28,7 @@ function actionCreator({ type, payload }) {
 /* SEND ACTION TO BACKGROUND */
 
 function sendActionToBackground({ type, payload }) {
-  port.postMessage(actionCreator({ type, payload }))
+  port.postMessage(actionCreator({ type, payload }));
 }
 
 /* ----------------------------------------------- */
@@ -45,7 +45,7 @@ function sendActionToBackground({ type, payload }) {
     saveNewItem({ name, text })
       .then(renderItems)
       .then(function() {
-        port.postMessage(actionCreator({ type: 'ADD_ITEM' }));
+        sendActionToBackground({ type: 'ADD_ITEM' });
       });
   });
 })();
@@ -59,7 +59,7 @@ function sendActionToBackground({ type, payload }) {
     deleteAllItems()
       .then(renderItems)
       .then(function() {
-        port.postMessage(actionCreator({ type: 'DELETE_ALL_ITEMS' }));
+        sendActionToBackground({ type: 'DELETE_ALL_ITEMS' });
       });
   });
 })();
@@ -156,7 +156,6 @@ function renderItems() {
       /* Item block added */
       var section = document.querySelector("section.section-items");
       var items = '';
-      console.log(store);
       store.data.forEach(function(data, index) {
         items += getItemString({
           name: data.name,
@@ -233,15 +232,30 @@ function deleteAllItems() {
 }
 
 /* ----------------------------------------------- */
+/* BACKGROUND EVENT COMMUNICATION */
+/* ----------------------------------------------- */
+
+var port = chrome.extension.connect({
+  name: 'popup-backround-connection'
+});
+
+port.onMessage.addListener(function(action) {
+  switch (action.type) {
+    case 'ADD_ITEM_SUCCESS':
+      console.log('나방은 무서워')
+      break;
+  
+    default:
+      break;
+  }
+});
+
+/* ----------------------------------------------- */
 /* MAIN */
 /* ----------------------------------------------- */
 
 function main() {
   renderItems();
 };
-
-var port = chrome.extension.connect({
-  name: 'popup-backround-connection'
-});
 
 main();

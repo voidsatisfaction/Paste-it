@@ -5,6 +5,24 @@
 var localStore = { data: [] };
 
 /* ----------------------------------------------- */
+/* ACTION CONSTANTS */
+/* ----------------------------------------------- */
+
+var ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
+
+function actionCreator({ type, payload }) {
+  return { type, payload };
+}
+
+/* SEND ACTION TO POPUP */
+
+function sendActionToPopup(port, { type, payload }) {
+  return function() {
+    port.postMessage(actionCreator({ type, payload }));
+  }
+}
+
+/* ----------------------------------------------- */
 /* HELPER */
 /* ----------------------------------------------- */
 
@@ -79,7 +97,7 @@ function deleteAllItems() {
 }
 
 /* ----------------------------------------------- */
-/* LISTENER FROM POPUP */
+/* POPUP EVENT COMMUNICATION */
 /* ----------------------------------------------- */
 
 function listenPopup() {
@@ -87,7 +105,8 @@ function listenPopup() {
     port.onMessage.addListener(function(action) {
       switch (action.type) {
         case 'ADD_ITEM':
-          render();
+          render()
+            .then(sendActionToPopup(port, { type: ADD_ITEM_SUCCESS }));
           break;
         case 'DELETE_ALL_ITEMS':
           render();
@@ -148,7 +167,7 @@ function render() {
     localStore = { data: [] };
   }
 
-  getStore()
+  return getStore()
     .then(removeAllMenus)
     .then(createItemMenu)
     .then(renderLocalStore)
@@ -200,7 +219,7 @@ function initialize() {
     localStore = currentStore;
   }
 
-  getStore()
+  return getStore()
     .then(setStore)
     .then(removeAllMenus)
     .then(createItemMenu)
