@@ -64,4 +64,8 @@ I strongly suggest that those who have interests in this project should read thi
 
 - [Whar are extesnions? - chrome developer](https://developer.chrome.com/extensions)
 
+## 7. SPECIAL THANKS
+
+[icons8.com](https://icons8.com/): Main icon used. thank you!
+
 Thank you
