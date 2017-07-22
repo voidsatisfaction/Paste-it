@@ -19,7 +19,7 @@ action = {
 
 var ADD_ITEM = 'ADD_ITEM';
 var EDIT_ITEM = 'EDIT_ITEM';
-var DELETE_ALL = 'DELETE_ALL';
+var DELETE_ALL_ITEMS = 'DELETE_ALL_ITEMS';
 
 function actionCreator({ type, payload }) {
   return { type, payload };
@@ -28,7 +28,7 @@ function actionCreator({ type, payload }) {
 /* SEND ACTION TO BACKGROUND */
 
 function sendActionToBackground({ type, payload }) {
-  port.postMessage(actionCreator({ type, payload }))
+  port.postMessage(actionCreator({ type, payload }));
 }
 
 /* ----------------------------------------------- */
@@ -42,11 +42,7 @@ function sendActionToBackground({ type, payload }) {
     var name = document.querySelector("#new-item-name").value;
     var text = document.querySelector("#new-item-text").value;
     
-    saveNewItem({ name, text })
-      .then(renderItems)
-      .then(function() {
-        port.postMessage(actionCreator({ type: 'ADD_ITEM' }));
-      });
+    sendActionToBackground({ type: 'ADD_ITEM', payload: { name, text } });
   });
 })();
 
@@ -56,11 +52,7 @@ function sendActionToBackground({ type, payload }) {
   deleteAllBtn.addEventListener("click", function() {
     this.classList.toggle("active");
     
-    deleteAllItems()
-      .then(renderItems)
-      .then(function() {
-        port.postMessage(actionCreator({ type: 'DELETE_ALL' }));
-      });
+    sendActionToBackground({ type: 'DELETE_ALL_ITEMS' });
   });
 })();
 
@@ -143,16 +135,17 @@ function renderItems() {
 
   var getStore = new Promise(function(resolve, reject) {
     chrome.storage.sync.get(function(store) {
-      resolve(store);
+      try {
+        resolve(store);
+      } catch(error) {
+        reject(error);
+      }
     });
   });
 
   return getStore
-    .catch(function(err) {
-      console.error('chrome storage error!');
-      console.error(err);
-    })
     .then(function(store) {
+      /* Item block added */
       var section = document.querySelector("section.section-items");
       var items = '';
       store.data.forEach(function(data, index) {
@@ -165,6 +158,7 @@ function renderItems() {
       section.innerHTML = items;
     })
     .then(function() {
+      /* item onclick event listener css js effects */
       var items = document.querySelectorAll(".item-name");
 
       items.forEach(function(item) {
@@ -180,10 +174,10 @@ function renderItems() {
       });
     })
     .then(function() {
+      /* editbutton onClick event */
       var editButtons = document.querySelectorAll(".item-edit-button");
       editButtons.forEach(function(editButton, i) {
         editButton.addEventListener("click", function() {
-          console.log('clicked');
           var innerText = document.querySelector("#item-detail-text-" + i).value;
           var action = {
             type: EDIT_ITEM,
@@ -195,39 +189,31 @@ function renderItems() {
           sendActionToBackground(action);
         });
       });
-    });
-}
-
-function saveNewItem({ name, text }) {
-  return new Promise(function(resolve, reject) {
-    chrome.storage.sync.get(function(store) {
-      store.data.push({ name, text });
-
-      store = Object.assign({},store);
-
-      chrome.storage.sync.set(store);
-
-      resolve(store);
-    });
-  })
-}
-
-function deleteAllItems() {
-  return new Promise(function(resolve, reject) {
-    try {
-      chrome.storage.sync.set({
-        data: [
-          /*
-          { name: ... , text: ... }
-          */
-        ]
-      })
-      resolve();
-    } catch(error) {
+    })
+    .catch(function(error) {
       console.error(error);
-    }
-  });
+    });
 }
+
+/* ----------------------------------------------- */
+/* BACKGROUND EVENT COMMUNICATION */
+/* ----------------------------------------------- */
+
+var port = chrome.extension.connect({
+  name: 'popup-backround-connection'
+});
+
+port.onMessage.addListener(function(action) {
+  switch (action.type) {
+    case 'ADD_ITEM_SUCCESS':
+      renderItems();
+      break;
+    case 'DELETE_ALL_ITEMS_SUCCESS':
+      renderItems();
+    default:
+      break;
+  }
+});
 
 /* ----------------------------------------------- */
 /* MAIN */
@@ -236,9 +222,5 @@ function deleteAllItems() {
 function main() {
   renderItems();
 };
-
-var port = chrome.extension.connect({
-  name: 'popup-backround-connection'
-});
 
 main();
